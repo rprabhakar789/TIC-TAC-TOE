@@ -7,6 +7,8 @@ import EditIcon from '@material-ui/icons/Edit';
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
 import CongratulationsDialog from './CongratulationsDialog'
+import {updateCell, didComplete} from './calculations'
+import { SettingsSystemDaydreamTwoTone } from "@material-ui/icons";
 //import { red, blue } from 'material-ui/colors'
 const useStyles = makeStyles((theme) => ({
 
@@ -64,8 +66,10 @@ function Tictactoe() {
      turn: 0,
      cell:a,
      win:0,
+     drawn:false,
      winner:0,
      filled:0,
+     cnt:0,
      winningCells:[]
    });
   const [players,setPlayers]=React.useState({
@@ -161,10 +165,13 @@ function Tictactoe() {
     {
       console.log("winning cells")
       console.log(winningcells)
+      setOpen(true)
       setState({
+        ...state,
         turn: 1-state.turn,
         cell:a,
         win:1,
+        cnt:state.cnt+1,
         winner:state.turn+1,
         filled:state.filled+1,
         winningCells: winningcells
@@ -173,6 +180,12 @@ function Tictactoe() {
         console.log(state.winningCells);
       })
     }
+    else if(state.cnt===8)
+    {
+      setOpen(true);
+      setState({...state,
+        drawn:true})
+    }
     else{
       console.log("didn't win yet")
       setState({
@@ -180,11 +193,11 @@ function Tictactoe() {
         cell:a,
         win:0,
         winner:0,
+        cnt:state.cnt+1,
         filled:state.filled+1,
         winningCells: state.winningCells
       })
     }
-
   }
   const handleReset=()=>{
     a = Array(10).fill("");
@@ -230,6 +243,14 @@ function Tictactoe() {
         Player2 (X)
       </Grid>
     </Grid>
+    
+    <CongratulationsDialog 
+    selectedValue={state.winner}
+    open={open}
+    onClose={handleClose}
+    dialogTitle={state.win?"Congratulations":"Draw"}
+    dialogText={state.win?("Player "+state.winner+" won"):"The match has been drawn"}
+    />
     <Grid
       container
       direction="column"
@@ -237,10 +258,7 @@ function Tictactoe() {
       justify="center"
       style={{marginTop:"50px"}}
     >
-    <CongratulationsDialog
-    selectedValue={selectedValue}
-    open={open}
-    onClose={handleClose}/>
+    
 
       <div className="game-box" style={{display:"block"}}>
           <div className="box-row" style={{display:"flex"}}>

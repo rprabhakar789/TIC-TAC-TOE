@@ -15,6 +15,7 @@ import Divider from '@material-ui/core/Divider'
 import Tictactoe from './tic-tac-toe'
 function App() {
   const options = ['Play with friend', 'Play with computer','Change Theme']
+  const [withComputer, setWithComputer]= React.useState(false)
   const [state, setState] = React.useState({
    key:'0'
  });
@@ -27,6 +28,13 @@ function App() {
 
     setState({ ...state, [anchor]: open });
   };
+  const handleOptionSelect=(key)=>{
+    console.log(key)
+    if(key<2)
+    {
+      setWithComputer(key);
+    }
+  }
 
   const list = (anchor) => (
     <Box
@@ -38,9 +46,7 @@ function App() {
       <List>
         {options.map((text, index) => (
           <ListItem button key={text}>
-            <ListItemIcon>
-            </ListItemIcon>
-            <ListItemText primary={text} />
+            <ListItemText primary={text} onClick={()=>handleOptionSelect(index)} />
           </ListItem>
         ))}
       </List>
@@ -69,7 +75,7 @@ function App() {
 
                 </Toolbar>
           </AppBar>
-      <Tictactoe/>
+      <Tictactoe playWithComputer={withComputer}/>
     </div>
   );
 }
